@@ -36,4 +36,18 @@ GaussianFiniteRank[The Gaussian measure implemented by finite element methods an
 - **meta_learn_mean_FNO.py**: Python scripts for learning a prior measure $\mathcal{N}(f(S; \theta), \mathcal{C}_0)$, where the mean function $f(S; \theta)$ depends on the data. In the program, the function $f(S;\theta)$ is implemented as a Fourier neural operator.  
 - **results_MAP_compare.py**: Compare the relative errors of maximum a posteriori estimates obtained by the optimization algorithm under the simple and complex environment settings. 
 - **compare_truth_FNO.py**: Draw figures to compare different methods.
-  
+
+
+## Workflows
+### The backward diffusion problem
+generate_meta_data.py
+meta_learn_mean.py
+meta_learn_FNO.py
+MAPSimpleCompare.py
+MAPComplexCompare.py
+### The Darcy flow problem
+generate_meta_data.py
+meta_learn_mean.py
+meta_learn_mean_FNO.py
+results_MAP_compare.py
+compare_truth_FNO.py
