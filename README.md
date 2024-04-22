@@ -81,9 +81,13 @@ python generate_meta_data.py
 
 Run the following command sequentially to learn the mean function and the FNO. 
 
-python meta_learn_mean.py
+python meta_learn_mean.py --env "simple"
 
-python meta_learn_mean_FNO.py
+python meta_learn_mean.py --env "complex"
+
+python meta_learn_mean_FNO.py --env "simple"
+
+python meta_learn_mean_FNO.py --env "complex"
 
 Run the following command sequentially to obtain the maximum a posteriori estimates. 
 
