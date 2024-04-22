@@ -20,8 +20,8 @@ GaussianFiniteRank[The Gaussian measure implemented by finite element methods an
 The subdirectory **1D_meta_learning** contains the main files for our numerical results.
 - **NN_library.py**: This file contains the class FNO1D and some aulixary functions. In this class, we implement the Fourier neural operator for 1D functions.
 - **generate_meta_data.py**: Python scripts that can generate the learning data with parameter settings according to Section 4 of the paper https://arxiv.org/abs/2310.12436
-- **meta_learn_mean.py**: Python scripts for learning a prior measure $N(f(\theta), \mathcal{C}_0)$, where the mean function $f(\theta)$ is independent of the data. 
-- **meta_learn_FNO.py**
-- **MAPSimpleCompare.py**
-- **MAPComplexCompare.py**
+- **meta_learn_mean.py**: Python scripts for learning a prior measure $\mathcal{N}(f(\theta), \mathcal{C}_0)$, where the mean function $f(\theta)$ is independent of the data. 
+- **meta_learn_FNO.py**: Python scripts for learning a prior measure $\mathcal{N}(f(S; \theta), \mathcal{C}_0)$, where the mean function $f(S; \theta)$ depends on the data. In the program, the function $f(S;\theta)$ is implemented as a Fourier neural operator.  
+- **MAPSimpleCompare.py**: Compare the relative errors of maximum a posteriori estimates obtained by the optimization algorithm under the simple environment setting. 
+- **MAPComplexCompare.py**: Compare the relative errors of maximum a posteriori estimates obtained by the optimization algorithm under the complex environment setting. 
   
