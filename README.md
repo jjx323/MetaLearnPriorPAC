@@ -67,6 +67,9 @@ python MAPSimpleCompare.py
 
 python MAPComplexCompare.py
 
+When all of the commands are executed, you will find a directory named "RESULTS". There will be two files named "errors_simple.txt" and "errors_complex.txt". 
+In the folder "RESULTS/figures", there will be two figures, that are similar figures shown in the paper https://arxiv.org/abs/2310.12436
+
 ### The Darcy flow problem
 
 generate_meta_data.py
