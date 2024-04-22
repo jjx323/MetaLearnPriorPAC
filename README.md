@@ -18,7 +18,7 @@ GaussianFiniteRank[The Gaussian measure implemented by finite element methods an
 - **common.py**: This file contains the class EquSolver and the class ModelBackwardDiffusion. The class EquSolver contains the implementations of solvers of forward, adjoint, incremental forward, and incremental adjoint equations. These equations are necessary for implementing gradient and Newton-type optimization algorithms. The class ModelBackwardDiffusion contains the function of calculating the loss, the gradient, and the Hessian operator.
 - **meta_common.py**: This file contains the classes Gaussian1DFiniteDifference, GaussianElliptic2Learn, GaussianFiniteRank, PDEFun, PDEFunBatched, PDEasNet, LossResidual, LossResidualBatched, PriorFun, PriorFunFR, LossPrior. The functionalities of these classes are obvious from their names. In these functions, we rewrite some functions in the file common.py to make them take advantage of the autograd ability in PyTorch.
 
-$\qquad$The subdirectory **1D_meta_learning** contains the main files for our numerical results.
+$\quad$The subdirectory **1D_meta_learning** contains the main files for our numerical results.
 - **NN_library.py**: This file contains the class FNO1D and some aulixary functions. In this class, we implement the Fourier neural operator for 1D functions.
 - **generate_meta_data.py**: Python scripts that can generate the learning data with parameter settings according to Section 4 of the paper https://arxiv.org/abs/2310.12436
 - **meta_learn_mean.py**: Python scripts for learning a prior measure $\mathcal{N}(f(\theta), \mathcal{C}_0)$, where the mean function $f(\theta)$ is independent of the data. 
