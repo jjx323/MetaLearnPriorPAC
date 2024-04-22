@@ -72,8 +72,22 @@ In the folder "RESULTS/figures", there will be two figures, that are similar fig
 
 ### The Darcy flow problem
 
-generate_meta_data.py
-meta_learn_mean.py
-meta_learn_mean_FNO.py
-results_MAP_compare.py
-compare_truth_FNO.py
+Run the following command sequentially to generate the training and testing datasets. 
+
+python generate_meta_data.py
+
+Run the following command sequentially to learn the mean function and the FNO. 
+
+python meta_learn_mean.py
+
+python meta_learn_mean_FNO.py
+
+Run the following command sequentially to obtain the maximum a posteriori estimates. 
+
+python results_MAP_compare.py
+
+python compare_truth_FNO.py
+
+When all of the commands are executed, you will find a directory named "RESULTS". There will be two files named "simple_errors.txt" and "complex_errors.txt". 
+In the folder "RESULTS/figures", there will be two figures, that are similar figures shown in the paper https://arxiv.org/abs/2310.12436
+
