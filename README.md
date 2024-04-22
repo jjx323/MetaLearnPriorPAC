@@ -40,14 +40,35 @@ GaussianFiniteRank[The Gaussian measure implemented by finite element methods an
 
 ## Workflows
 ### The backward diffusion problem
-Run the following command sequentially: 
 
-generate_meta_data.py
-meta_learn_mean.py
-meta_learn_FNO.py
-MAPSimpleCompare.py
-MAPComplexCompare.py
+Run the following command sequentially to generate the training and testing datasets. 
+
+python generate_meta_data.py --env "simple"
+
+python generate_meta_data.py --env "complex"
+
+python generate_meta_data.py --test_true --env "simple"
+
+python generate_meta_data.py --test_true --env "complex"
+
+Run the following command sequentially to learn the mean function and the FNO. 
+
+python meta_learn_mean.py --env "simple"
+
+python meta_learn_mean.py --env "complex"
+
+python meta_learn_FNO.py --env "simple"
+
+python meta_learn_FNO.py --env "complex"
+
+Run the following command sequentially to obtain the maximum a posteriori estimates. 
+
+python MAPSimpleCompare.py
+
+python MAPComplexCompare.py
+
 ### The Darcy flow problem
+
 generate_meta_data.py
 meta_learn_mean.py
 meta_learn_mean_FNO.py
