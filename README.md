@@ -40,6 +40,8 @@ GaussianFiniteRank[The Gaussian measure implemented by finite element methods an
 
 ## Workflows
 ### The backward diffusion problem
+Run the following command sequentially: 
+
 generate_meta_data.py
 meta_learn_mean.py
 meta_learn_FNO.py
