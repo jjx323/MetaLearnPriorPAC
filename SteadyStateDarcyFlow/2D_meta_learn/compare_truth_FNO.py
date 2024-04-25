@@ -63,7 +63,7 @@ if env == "simple":
     plt.colorbar(fig)
     plt.title("(c) Estimated mean function")
     plt.tight_layout(pad=1, w_pad=0.5, h_pad=2) 
-    plt.savefig("fig_simple.png", dpi=500)
+    plt.savefig(meta_results_dir + "fig_simple.png", dpi=500)
     plt.close()
 
 if env == "complex":
@@ -99,7 +99,7 @@ if env == "complex":
     plt.title("(f) Estimated mean function")
     
     plt.tight_layout(pad=1, w_pad=0.5, h_pad=2) 
-    plt.savefig("fig_complex.png", dpi=500)
+    plt.savefig(meta_results_dir + "fig_complex.png", dpi=500)
     plt.close()
 
 
