@@ -98,5 +98,5 @@ python compare_truth_FNO.py --env "simple"
 python compare_truth_FNO.py --env "complex"
 
 When all of the commands are executed, you will find a directory named "RESULTS". There will be two files named "simple_errors.txt" and "complex_errors.txt". 
-In the folder "RESULTS/figures", there will be two figures, that are similar figures shown in the paper https://arxiv.org/abs/2310.12436
+In the folder "RESULTS", there will be two figures, that are similar figures shown in the paper https://arxiv.org/abs/2310.12436
 
