@@ -34,7 +34,7 @@ GaussianFiniteRank[The Gaussian measure implemented by finite element methods an
 - **MLcommon.py**: This file contains the classes GaussianFiniteRankTorch, GaussianElliptic2Torch, PriorFun, HyperPrior, HyerPriorAll, ForwardProcessNN, ForwardProcessPDE, ForwardPrior, LossFun, PDEFun, PDEasNet, LossResidual, Dis2Fun, LpLoss, FNO2d. The functionalities of these classes are obvious from their names. In these functions, we rewrite some functions in the file common.py to make them take advantage of the autograd ability in PyTorch.
 
   The subdirectory **2D_meta_learning** contains the main files for our numerical results.
-- **generate_meta_data.py**: Python scripts that can generate the learning data with parameter settings according to Section 4 of the paper https://arxiv.org/abs/2310.12436
+- **generate_meta_data.py**: Python scripts that can generate the learning data.
 - **meta_learn_mean.py**: Python scripts for learning a prior measure $\mathcal{N}(f(\theta), \mathcal{C}_0)$, where the mean function $f(\theta)$ is independent of the data. 
 - **meta_learn_mean_FNO.py**: Python scripts for learning a prior measure $\mathcal{N}(f(S; \theta), \mathcal{C}_0)$, where the mean function $f(S; \theta)$ depends on the data. In the program, the function $f(S;\theta)$ is implemented as a Fourier neural operator.  
 - **results_MAP_compare.py**: Compare the relative errors of maximum a posteriori estimates obtained by the optimization algorithm under the simple and complex environment settings. 
@@ -98,5 +98,5 @@ python compare_truth_FNO.py --env "simple"
 python compare_truth_FNO.py --env "complex"
 
 When all of the commands are executed, you will find a directory named "RESULTS". There will be two files named "simple_errors.txt" and "complex_errors.txt". 
-In the folder "RESULTS", there will be two figures, that are similar figures shown in the paper https://arxiv.org/abs/2310.12436
+In the folder "RESULTS", there will be two figures, that are similar figures shown in the paper.
 
