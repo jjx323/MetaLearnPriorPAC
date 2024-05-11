@@ -23,7 +23,7 @@ GaussianFiniteRank[The Gaussian measure implemented by finite element methods an
 
   The subdirectory **1D_meta_learning** contains the main files for our numerical results.
 - **NN_library.py**: This file contains the class FNO1D and some aulixary functions. In this class, we implement the Fourier neural operator for 1D functions.
-- **generate_meta_data.py**: Python scripts that can generate the learning data with parameter settings according to Section 4 of the paper https://arxiv.org/abs/2310.12436
+- **generate_meta_data.py**: Python scripts that can generate the learning data.
 - **meta_learn_mean.py**: Python scripts for learning a prior measure $\mathcal{N}(f(\theta), \mathcal{C}_0)$, where the mean function $f(\theta)$ is independent of the data. 
 - **meta_learn_FNO.py**: Python scripts for learning a prior measure $\mathcal{N}(f(S; \theta), \mathcal{C}_0)$, where the mean function $f(S; \theta)$ depends on the data. In the program, the function $f(S;\theta)$ is implemented as a Fourier neural operator.  
 - **MAPSimpleCompare.py**: Compare the relative errors of maximum a posteriori estimates obtained by the optimization algorithm under the simple environment setting. 
@@ -71,7 +71,7 @@ python MAPSimpleCompare.py
 python MAPComplexCompare.py
 
 When all of the commands are executed, you will find a directory named "RESULTS". There will be two files named "errors_simple.txt" and "errors_complex.txt". 
-In the folder "RESULTS/figures", there will be two figures, that are similar figures shown in the paper https://arxiv.org/abs/2310.12436
+In the folder "RESULTS/figures", there will be two figures, that are similar figures shown in the paper.
 
 ### The Darcy flow problem
 
