@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<dolfin xmlns:dolfin="http://fenicsproject.org">
+  <mesh celltype="interval" dim="1">
+    <vertices size="71">
+      <vertex index="0" x="0.000000000000000e+00" />
+      <vertex index="1" x="1.428571428571429e-02" />
+      <vertex index="2" x="2.857142857142857e-02" />
+      <vertex index="3" x="4.285714285714286e-02" />
+      <vertex index="4" x="5.714285714285714e-02" />
+      <vertex index="5" x="7.142857142857142e-02" />
+      <vertex index="6" x="8.571428571428572e-02" />
+      <vertex index="7" x="1.000000000000000e-01" />
+      <vertex index="8" x="1.142857142857143e-01" />
+      <vertex index="9" x="1.285714285714286e-01" />
+      <vertex index="10" x="1.428571428571428e-01" />
+      <vertex index="11" x="1.571428571428571e-01" />
+      <vertex index="12" x="1.714285714285714e-01" />
+      <vertex index="13" x="1.857142857142857e-01" />
+      <vertex index="14" x="2.000000000000000e-01" />
+      <vertex index="15" x="2.142857142857143e-01" />
+      <vertex index="16" x="2.285714285714286e-01" />
+      <vertex index="17" x="2.428571428571429e-01" />
+      <vertex index="18" x="2.571428571428571e-01" />
+      <vertex index="19" x="2.714285714285714e-01" />
+      <vertex index="20" x="2.857142857142857e-01" />
+      <vertex index="21" x="3.000000000000000e-01" />
+      <vertex index="22" x="3.142857142857143e-01" />
+      <vertex index="23" x="3.285714285714286e-01" />
+      <vertex index="24" x="3.428571428571429e-01" />
+      <vertex index="25" x="3.571428571428572e-01" />
+      <vertex index="26" x="3.714285714285714e-01" />
+      <vertex index="27" x="3.857142857142857e-01" />
+      <vertex index="28" x="4.000000000000000e-01" />
+      <vertex index="29" x="4.142857142857143e-01" />
+      <vertex index="30" x="4.285714285714285e-01" />
+      <vertex index="31" x="4.428571428571428e-01" />
+      <vertex index="32" x="4.571428571428571e-01" />
+      <vertex index="33" x="4.714285714285714e-01" />
+      <vertex index="34" x="4.857142857142857e-01" />
+      <vertex index="35" x="5.000000000000000e-01" />
+      <vertex index="36" x="5.142857142857142e-01" />
+      <vertex index="37" x="5.285714285714286e-01" />
+      <vertex index="38" x="5.428571428571428e-01" />
+      <vertex index="39" x="5.571428571428572e-01" />
+      <vertex index="40" x="5.714285714285714e-01" />
+      <vertex index="41" x="5.857142857142857e-01" />
+      <vertex index="42" x="6.000000000000000e-01" />
+      <vertex index="43" x="6.142857142857143e-01" />
+      <vertex index="44" x="6.285714285714286e-01" />
+      <vertex index="45" x="6.428571428571429e-01" />
+      <vertex index="46" x="6.571428571428571e-01" />
+      <vertex index="47" x="6.714285714285714e-01" />
+      <vertex index="48" x="6.857142857142857e-01" />
+      <vertex index="49" x="7.000000000000000e-01" />
+      <vertex index="50" x="7.142857142857143e-01" />
+      <vertex index="51" x="7.285714285714285e-01" />
+      <vertex index="52" x="7.428571428571429e-01" />
+      <vertex index="53" x="7.571428571428571e-01" />
+      <vertex index="54" x="7.714285714285715e-01" />
+      <vertex index="55" x="7.857142857142857e-01" />
+      <vertex index="56" x="8.000000000000000e-01" />
+      <vertex index="57" x="8.142857142857143e-01" />
+      <vertex index="58" x="8.285714285714286e-01" />
+      <vertex index="59" x="8.428571428571429e-01" />
+      <vertex index="60" x="8.571428571428571e-01" />
+      <vertex index="61" x="8.714285714285714e-01" />
+      <vertex index="62" x="8.857142857142857e-01" />
+      <vertex index="63" x="9.000000000000000e-01" />
+      <vertex index="64" x="9.142857142857143e-01" />
+      <vertex index="65" x="9.285714285714286e-01" />
+      <vertex index="66" x="9.428571428571428e-01" />
+      <vertex index="67" x="9.571428571428572e-01" />
+      <vertex index="68" x="9.714285714285714e-01" />
+      <vertex index="69" x="9.857142857142858e-01" />
+      <vertex index="70" x="1.000000000000000e+00" />
+    </vertices>
+    <cells size="70">
+      <interval index="0" v0="0" v1="1" />
+      <interval index="1" v0="1" v1="2" />
+      <interval index="2" v0="2" v1="3" />
+      <interval index="3" v0="3" v1="4" />
+      <interval index="4" v0="4" v1="5" />
+      <interval index="5" v0="5" v1="6" />
+      <interval index="6" v0="6" v1="7" />
+      <interval index="7" v0="7" v1="8" />
+      <interval index="8" v0="8" v1="9" />
+      <interval index="9" v0="9" v1="10" />
+      <interval index="10" v0="10" v1="11" />
+      <interval index="11" v0="11" v1="12" />
+      <interval index="12" v0="12" v1="13" />
+      <interval index="13" v0="13" v1="14" />
+      <interval index="14" v0="14" v1="15" />
+      <interval index="15" v0="15" v1="16" />
+      <interval index="16" v0="16" v1="17" />
+      <interval index="17" v0="17" v1="18" />
+      <interval index="18" v0="18" v1="19" />
+      <interval index="19" v0="19" v1="20" />
+      <interval index="20" v0="20" v1="21" />
+      <interval index="21" v0="21" v1="22" />
+      <interval index="22" v0="22" v1="23" />
+      <interval index="23" v0="23" v1="24" />
+      <interval index="24" v0="24" v1="25" />
+      <interval index="25" v0="25" v1="26" />
+      <interval index="26" v0="26" v1="27" />
+      <interval index="27" v0="27" v1="28" />
+      <interval index="28" v0="28" v1="29" />
+      <interval index="29" v0="29" v1="30" />
+      <interval index="30" v0="30" v1="31" />
+      <interval index="31" v0="31" v1="32" />
+      <interval index="32" v0="32" v1="33" />
+      <interval index="33" v0="33" v1="34" />
+      <interval index="34" v0="34" v1="35" />
+      <interval index="35" v0="35" v1="36" />
+      <interval index="36" v0="36" v1="37" />
+      <interval index="37" v0="37" v1="38" />
+      <interval index="38" v0="38" v1="39" />
+      <interval index="39" v0="39" v1="40" />
+      <interval index="40" v0="40" v1="41" />
+      <interval index="41" v0="41" v1="42" />
+      <interval index="42" v0="42" v1="43" />
+      <interval index="43" v0="43" v1="44" />
+      <interval index="44" v0="44" v1="45" />
+      <interval index="45" v0="45" v1="46" />
+      <interval index="46" v0="46" v1="47" />
+      <interval index="47" v0="47" v1="48" />
+      <interval index="48" v0="48" v1="49" />
+      <interval index="49" v0="49" v1="50" />
+      <interval index="50" v0="50" v1="51" />
+      <interval index="51" v0="51" v1="52" />
+      <interval index="52" v0="52" v1="53" />
+      <interval index="53" v0="53" v1="54" />
+      <interval index="54" v0="54" v1="55" />
+      <interval index="55" v0="55" v1="56" />
+      <interval index="56" v0="56" v1="57" />
+      <interval index="57" v0="57" v1="58" />
+      <interval index="58" v0="58" v1="59" />
+      <interval index="59" v0="59" v1="60" />
+      <interval index="60" v0="60" v1="61" />
+      <interval index="61" v0="61" v1="62" />
+      <interval index="62" v0="62" v1="63" />
+      <interval index="63" v0="63" v1="64" />
+      <interval index="64" v0="64" v1="65" />
+      <interval index="65" v0="65" v1="66" />
+      <interval index="66" v0="66" v1="67" />
+      <interval index="67" v0="67" v1="68" />
+      <interval index="68" v0="68" v1="69" />
+      <interval index="69" v0="69" v1="70" />
+    </cells>
+    <data />
+  </mesh>
+</dolfin>
