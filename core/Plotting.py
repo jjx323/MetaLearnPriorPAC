@@ -3,7 +3,6 @@
 """
 Created on Sun Dec 13 17:00:22 2020
 
-@author: Junxiong Jia
 """
 
 import matplotlib.pyplot as plt
