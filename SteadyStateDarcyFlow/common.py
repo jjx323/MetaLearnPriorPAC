@@ -3,7 +3,6 @@
 """
 Created on Tue Aug 20 21:45:50 2019
 
-@author: jjx323
 """
 import numpy as np
 from scipy.special import gamma
