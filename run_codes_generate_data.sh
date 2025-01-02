@@ -44,6 +44,6 @@ python meta_learn_mean_FNO.py --env "simple"
 python meta_learn_mean_FNO.py --env "complex"
 
 # Calculate MAP
-python results_MAP_compare.py
+python result_MAP_compare.py
 python compare_truth_FNO.py --env "simple"
 python compare_truth_FNO.py --env "complex"
