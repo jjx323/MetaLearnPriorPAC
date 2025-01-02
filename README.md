@@ -99,7 +99,7 @@ python meta_learn_mean_FNO.py --env "complex"
 
 Run the following command sequentially to obtain the maximum a posteriori estimates. 
 
-python results_MAP_compare.py
+python result_MAP_compare.py
 
 python compare_truth_FNO.py --env "simple"
 
