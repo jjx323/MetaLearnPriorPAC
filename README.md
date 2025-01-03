@@ -3,8 +3,6 @@
 ## Overview
 
 The program relies on FEniCS (Version 2019.1.0) and PyTorch (Version 1.12.1+cu116). You may need to install FEniCS in a conda environment, and then install PyTorch using pip. Installing PyTorch via conda may cause conflicts, but installing it via pip seems to pose no problems for us.
-The generated data (6.84GB) and code can also be downloaded from the link: https://www.alipan.com/s/FQ79wwUAYbs
-or the link https://drive.google.com/drive/folders/1ekb_fWj4p7CZEBsx6BOMSkb5eCBMU_9A?usp=drive_link
 
 1. Directory **core** contains the main functions and classes that are useful for implementing the algorithms. Specifically,
 - **probability.py**: This file contains classes of GaussianElliptic2[The Gaussian measure implemented by finite element methods based on solving elliptic differential equations used for generating samples and also contains the functionality of evaluate the gradient and Hessian operators];
@@ -44,12 +42,6 @@ GaussianFiniteRank[The Gaussian measure implemented by finite element methods an
 
 
 ## Workflows
-
-If the datasets have already been generated, to generate the results, one can simply execute the command `./run_codes.sh` in the terminal.
-If the datasets have not been generated, one can simply execute the command `./run_codes_generate_data.sh` in the terminal.
-It is important to acknowledge that this computation may extend beyond two days.
-For those seeking an alternative methodology, please adhere to the instructions outlined below.
-
 ### The backward diffusion problem
 
 Run the following command sequentially to generate the training and testing datasets. 
@@ -99,7 +91,9 @@ python meta_learn_mean_FNO.py --env "complex"
 
 Run the following command sequentially to obtain the maximum a posteriori estimates. 
 
-python result_MAP_compare.py
+python results_MAP_compare.py --env "simple"
+
+python results_MAP_compare.py --env "complex"
 
 python compare_truth_FNO.py --env "simple"
 
