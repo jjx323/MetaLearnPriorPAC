@@ -337,7 +337,7 @@ if comput_unlearned == True:
 
     unlearned_error_list = np.array(unlearned_error_list, dtype=np.float64)
     np.save(meta_results_dir + "unlearned_error_list", np.array(unlearned_error_list))
-    np.save(meta_results_dir + "estimates_unlearn_MAP", (estimates_unlearn, final_error_unlearn))
+    #np.save(meta_results_dir + "estimates_unlearn_MAP", (estimates_unlearn, final_error_unlearn))
 
 
 """
@@ -426,7 +426,7 @@ if comput_learned_f == True:
 
     learned_error_list_f = np.array(learned_error_list_f)
     np.save(meta_results_dir + "learned_error_list_f", np.array(learned_error_list_f))
-    np.save(meta_results_dir + "estimates_learn_MAP_f", (estimates_learn_f, final_error_learn_f))
+    #np.save(meta_results_dir + "estimates_learn_MAP_f", (estimates_learn_f, final_error_learn_f))
 
 
 """
@@ -511,7 +511,7 @@ if comput_learned_fS == True:
             print("Learned f(S;theta) Error: ", learned_error_list[-1])
 
     np.save(meta_data_dir + "learned_error_list", np.array(learned_error_list, dtype=np.float64))
-    np.save(meta_results_dir + "estimates_learn_MAP", (estimates_learn, final_error_learn))
+    #np.save(meta_results_dir + "estimates_learn_MAP", (estimates_learn, final_error_learn))
 
 unlearned_error_list = np.load(meta_results_dir + "unlearned_error_list.npy", allow_pickle=True)
 learned_error_list_f = np.load(meta_results_dir + "learned_error_list_f.npy", allow_pickle=True)
