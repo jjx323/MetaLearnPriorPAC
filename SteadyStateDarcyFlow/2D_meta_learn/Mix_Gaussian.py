@@ -1,0 +1,395 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.sparse.linalg as spsl
+import time
+from scipy.special import logsumexp
+from sklearn.mixture import GaussianMixture
+from sklearn.model_selection import GridSearchCV
+import fenics as fe
+import os
+
+
+class Mix_Gauss_IS_proposal:
+    # Ref[1]: AN ADAPTIVE INDEPENDENCE SAMPLER MCMC ALGORITHM FOR INFINITE-DIMENSIONAL BAYESIAN
+    # INFERENCES, Jinglai Li
+    def __init__(self, prior, project_dim=None, samples=None, comm=None, loss=None
+                 , max_num_GM=None):
+        self.prior = prior
+        self.samples_origin=samples
+        self.loss = loss
+        self.comm = comm
+        if project_dim is not None:
+            self.sample_dim=project_dim
+        else:
+            self.sample_dim = self.compute_project_dim()  # i.e. the project dim
+        self.project_dim = self.sample_dim
+        if max_num_GM is None:
+            self.max_num_GM=15
+        else:
+            self.max_num_GM=max_num_GM
+        
+        self.samples_high_dim=None
+        if samples is not None:
+            self.num_samples = samples.shape[0]
+            if comm is not None and comm.rank==0:
+                print("There are " + str(samples.shape[0]) +
+                  " samples. Dim = "+str(samples.shape[1])+".")
+            self.update_samples(samples)   
+        
+    def update_samples(self, samples):
+        if self.samples_high_dim is None:
+            self.samples_high_dim=samples @ self.prior.M @ self.prior.eigvec
+        
+        self.samples = self.project(samples, self.project_dim)
+        self.weights, self.clusters = self.clustering(self.samples)
+        self.x, self.h, self.m, self.cov = self.estimate_paras()
+        # print(self.cov)
+
+    def update_loss(self, loss):
+        self.loss = loss
+
+    def compute_acc_rate(self, u, v):
+        # based om (3.7),(3.1) and (3.2) in [1]
+        # return min(1, mu_y_on_mu(v)/mu_y_on_mu(u))
+        # where mu_y is the posterior, and mu is the GMM
+        def ln_f(u, j):
+            # ln(f), where f(.,j) is f(u,xj,hj) in (3.7)
+            xj = self.x[j]
+            hj = self.h[j]
+            alpha = self.alpha
+            betaj = self.cov[j]
+            u_proj = self.project(u)
+            ans = alpha*alpha*xj*xj/betaj+hj*u_proj*u_proj-2*self.alpha*xj*u_proj/betaj
+            ans2 = np.log(alpha)/2-np.log(betaj)/2
+            return np.sum(ans2)-0.5*sum(ans)
+
+        def ln_mu_y_on_mu(u):
+            if self.loss is not None:
+                ans1 = -1*self.loss(u)
+            else:
+                ans1=0
+
+            wf = []
+            for j in range(len(self.clusters)):
+                wf.append(np.log(self.weights[j])+ln_f(u, j))
+            ans2 = logsumexp(wf)
+            return ans1-ans2
+        # print(self.loss(u),self.loss(v))
+        # print(ln_mu_y_on_mu(u),ln_mu_y_on_mu(v))
+        # print()
+        acc_rate = np.exp(min(0, ln_mu_y_on_mu(v)-ln_mu_y_on_mu(u)))
+        # print(acc_rate)
+        return acc_rate
+    
+    def a_preserve_GMM(self,u,v):
+        self.loss=None
+        return self.compute_acc_rate(v,u)
+    
+    # def P_preserve_GMM(self,particles,beta,len_chain):
+    #     particles_end=[]
+    #     particles_acc_rate=[]
+    #     num_particles=particles.shape[0]
+    #     for idx_particle in range(num_particles):
+    #         n_acc=0
+    #         u=particles[idx_particle]
+    #         for i in range(len_chain):
+    #             v=np.sqrt(1-beta**2)*u+beta*self.prior.generate_sample()
+    #             if np.random.uniform()<self.a_preserve_GMM(u, v):
+    #                 u=v
+    #                 n_acc+=1
+    #         particles_end.append(u)
+    #         particles_acc_rate.append(n_acc/len_chain)
+    #     return np.array(particles_end),particles_acc_rate
+
+    def compare_GMM_with_posterior(self, len_chain=None):
+        # If GMM is a good estimation of mu_y, the acc_rate will not be too low
+        # when we sample from posterior using GMM as proposal
+                
+        if len_chain is None:
+            len_chain=self.num_samples
+        
+        u = self.generate_sample()
+
+        n_acc = 0
+        for i in range(len_chain):
+            v = self.generate_sample()
+            acc_rate = self.compute_acc_rate(u, v)
+
+            if np.random.uniform() < acc_rate:
+                n_acc += 1
+                u=np.array(v)
+
+
+            if i > 1 and i % 100 == 0:
+                print(str(i), "step is completed. Acc rate = ", str(n_acc/i))
+        print("Acc rate of GMM = ", str(n_acc/len_chain))
+        # return n_acc/len_chain
+
+    def compute_project_dim(self):
+        # Note that if we want to use BIC method to decide the num of gauss, then there
+        # should be num_samples > sample_dim. In practice, the num where we cut the eigval
+        # is also important: too small num_samples or too high cut_num will lead to bad clusters
+        # i.e. the codes perform badly in test data generated by 3 gauss prior
+        # num_samples=3000, cut_num=0.999 is fine
+        # num_samples=300, cut_num=0.99 is fine
+        if self.prior.is_eig_available is False:
+            self.prior.calculate_eigensystem()
+        self.alpha, self.e = self.prior.lam, self.prior.eigvec
+        
+        
+        # i.e. self.samples_high_dim are samples in 200-dim eigen space
+        # alpha and e are the names of eigenpairs in [1], note that e[:,i] is the i-th eigvec
+        # print(self.e.shape) # [2601,10]
+        tem = 0
+        for i in range(len(self.alpha)):
+            tem += self.alpha[i]
+            if tem > 0.999999*sum(self.alpha):
+                break
+        if i <50:
+            i = 50 # i should not be too small
+        # i=20#0
+        self.alpha = self.alpha[0:i]
+        self.e = self.e[:, 0:i]
+        
+        # def basis1(x):
+        #     return np.cos(np.pi*x[0])
+        # tem_fun=fe.Function(self.prior.Vh)
+        # tem_fun.interpolate(basis1)
+        tem_fun = fe.interpolate(
+            fe.Expression(
+                "cos(3.1415*x[0])", degree=3), self.prior.Vh 
+            )  
+        
+        tem_vec=np.array(tem_fun.vector()[:])
+        self.e[:,1]=tem_vec/np.sqrt(tem_vec@ self.prior.M @tem_vec)
+        # def basis2(x):
+        #     return np.cos(np.pi*x[1])
+        # tem_fun.interpolate(basis2)
+
+        tem_fun = fe.interpolate(
+            fe.Expression(
+                "cos(3.1415*x[1])", degree=3), self.prior.Vh 
+            )  
+        
+        tem_vec=np.array(tem_fun.vector()[:])
+        self.e[:,2]=tem_vec/np.sqrt(tem_vec@ self.prior.M @tem_vec)
+        # def basis4(x):
+        #     return np.cos(2*np.pi*x[0])
+        # tem_fun.interpolate(basis4)
+        # tem_vec=np.array(tem_fun.x.array[:])
+        # self.e[:,4]=tem_vec/np.sqrt(tem_vec@ self.prior.M @tem_vec)
+        # def basis5(x):
+        #     return np.cos(2*np.pi*x[1])
+        # tem_fun.interpolate(basis5)
+        # tem_vec=np.array(tem_fun.x.array[:])
+        # self.e[:,5]=tem_vec/np.sqrt(tem_vec@ self.prior.M @tem_vec)
+                
+        if self.comm is not None and self.comm.rank ==0:  
+            print("The samples will be project into a " +
+                  str(i)+"-dim space, the eigen value are:")
+            np.set_printoptions(linewidth=200)
+            print(self.alpha)
+            np.set_printoptions(formatter=None) 
+        return i
+
+    def estimate_paras(self):
+        x, h, m, cov = [], [], [], []  # m,cov are mean and covariance of gauss
+        # x and h are paras in [1]
+        # cluster.shape=[1000,10], num of samples * project dim
+        for cluster in self.clusters:
+            Nj = len(cluster)  # num of members in this cluster
+            xj, hj = [], []
+            mj, covj = [], []
+
+            for k in range(cluster.shape[1]):
+                data = cluster[:, k]
+                
+                mjk = np.mean(data)
+                xjk = mjk/self.prior.lam[k]
+
+                xj.append(xjk)
+                mj.append(mjk)
+
+                covjk = data@data/Nj-mjk**2
+                hjk = 1/covjk-1/self.prior.lam[k]
+
+                hj.append(hjk)
+                covj.append(covjk)
+                # covj.append(self.alpha[k])# CAUTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            x.append(xj)
+            h.append(hj)
+            m.append(mj)
+            cov.append(covj)
+        # print("cov=",cov)
+        return x, h, m, cov
+
+    def generate_sample(self, n=1):
+        samples = []
+        for i in range(n):
+            idx = np.random.choice(len(self.clusters), p=self.weights)
+            mean = np.array(self.m[idx])
+            cov = np.array(self.cov[idx])
+
+            tem = np.random.normal(0, 1, cov.shape[0])
+            # print("cov=",cov)
+            sample_project = mean+tem*np.sqrt(cov)
+            sample = sample_project @ self.e.T
+
+            samples.append(sample)
+        if n == 1:
+            return np.array(samples[0])
+        else:
+            return np.array(samples)
+
+    # def cluster(self,samples, num_clusters):
+    #     cluster = KMeans(n_clusters=num_clusters, n_init='auto').fit(samples)
+    #     labels = cluster.labels_
+    #     samples_cluster, nums = [], []
+    #     for i in range(num_clusters):
+    #         samples_cluster.append(samples[labels == i])
+    #         nums.append(sum(labels == i))
+    #     self.nums=nums
+    #     weights = nums/sum(nums)
+    #     return samples_cluster, weights
+
+    def project(self, f, project_dim=None):
+        M = self.prior.M
+        if len(f.shape)==2:  
+            assert f.shape[1] == M.shape[0], "dim dismatch! f is " + \
+                str(f.shape)+", but M is "+str(M.shape)
+        if len(f.shape) ==1:
+            assert f.shape[0]== M.shape[0], "dim dismatch! f is " + \
+                str(f.shape)+", but M is "+str(M.shape)
+        # project samples from R^(dim_mesh) to low-dim space
+
+        return f @ self.prior.M @ self.e
+
+    def clustering(self, samples):
+        # this function clusters the samples, and the result is self.clusters, a list.
+        # self.clusters[i] is the i-th cluster
+        # Moreover the weights in GMM are also returned, and the means and covs will be computed
+        # as ref[1] in self.estimate_paras()
+        def gmm_bic_score(estimator, samples):  # gmm: Gauss Mixture Model
+            return -estimator.bic(samples)
+
+        param_grid = {
+            "n_components": range(1, self.max_num_GM),#15),
+            # options: tied has the same cov, full has different covs
+            "covariance_type": ["diag"],
+        }
+
+        grid_search = GridSearchCV(GaussianMixture(), param_grid=param_grid,
+                                   scoring=gmm_bic_score)
+        grid_search.fit(samples)
+        labels = grid_search.best_estimator_.predict(self.samples)
+        self.labels=labels
+        weights = grid_search.best_estimator_.weights_
+
+        result = grid_search.cv_results_
+        # print(result["mean_test_score"]*-1)
+        # print(result["param_n_components"])
+        # print(result)
+        # param_n_components: Number of components
+        # param_covariance_type: Type of covariance
+        # mean_test_score: BIC score
+
+        idx = np.argmax(result["mean_test_score"])  # i.e. argmin(BIC)
+        num_clusters = result["param_n_components"][idx]
+        if self.comm is not None and self.comm.rank==0:
+            print("The samples are clustered into " +
+              str(num_clusters)+" partitions")
+        clusters = []
+        self.clusters_origin=[]
+        for i in range(num_clusters):
+            idx = labels == i
+            clusters.append(self.samples[idx])#(self.samples_high_dim[idx]) # 
+            # self.clusters_origin.append(self.samples_origin[idx])
+        return weights, clusters
+        # plt.figure()
+        # plt.scatter(self.clusters[0][:,0],self.clusters[0][:,1],c="g")
+        # plt.scatter(self.clusters[1][:,0],self.clusters[1][:,1],c="r")
+        # plt.scatter(self.clusters[2][:,0],self.clusters[2][:,1],c="b")
+        # plt.show()
+
+
+class MCMCBase:
+    def __init__(self, model, reduce_chain=None, save_path=None):
+        assert hasattr(model, "prior")
+        self.model = model
+        self.prior = model.prior
+        self.reduce_chain = reduce_chain
+        self.save_path = save_path
+        if self.save_path is not None:
+            if not os.path.exists(self.save_path):
+                os.makedirs(self.save_path)
+
+        self.chain = []
+        self.acc_rate = 0.0
+        self.index = 0
+
+    def save_local(self):
+        ## reduce_chain is an interger number, we will withdraw the reduce_chain number of samples
+        ## to save the memory; if the path is specified, we save the chain.
+        if self.reduce_chain is not None:
+            if self.save_path is not None:
+                if np.int64(len(self.chain)) == np.int64(self.reduce_chain):
+                    np.save(self.save_path / ('sample_' + str(np.int64(self.index))), self.chain)
+                    # tmp = self.chain[-1].copy()
+                    # self.chain = [tmp]
+                    self.chain = []
+                    self.index += 1
+            elif self.save_path is None:
+                if np.int64(len(self.chain)) == np.int64(self.reduce_chain):
+                    # tmp = self.chain[-1].copy()
+                    # self.chain = [tmp]
+                    self.chain = []
+                    self.index += 1  ## here the index has not meaning
+
+    def save_all(self):
+        if self.save_path is not None:
+            if self.reduce_chain is None:
+                np.save(self.save_path / ('samples_all', self.chain))
+        # else:
+        #     print('\033[1;31m', end='')
+        #     print("Not specify the save_path!")
+        #     print('\033[0m', end='')
+
+    def sampling(self, len_chain, callback=None, u0=None, index=None, **kwargs):
+        raise NotImplementedError
+
+
+class pCN_preserve_GMM(MCMCBase):
+    '''
+    M. Dashti, A. M. Stuart, The Bayesian Approch to Inverse Problems,
+    Hankbook of Uncertainty Quantification, 2017 [Sections 5.1 and 5.2]
+    '''
+    def __init__(self, model, GMM, reduce_chain=None, save_path=None):
+        super().__init__(model, reduce_chain, save_path)
+        self.dim = model.num_dofs
+        self.GMM=GMM
+
+    # def proposal(self, x):
+    #     gamma=np.sqrt(1-self.beta*self.beta)
+    #     return gamma * x + self.beta * self.prior.generate_sample()
+
+    def sampling(self, len_chain, callback=None, u0=None, index=None):
+        ## index is the block of the chain saved on the hard disk
+        if index == None:
+            self.index = 0
+        else:
+            self.index = index
+        # while i <= len_chain:
+        x = self.GMM.generate_sample()
+        self.chain = [x]
+        self.acc_rate = 1
+        self.save_local()
+        self.save_all()
+
+    def generate_chain(self, length_total, callback=None, uk=None, index=None):
+        self.sampling(length_total, callback, uk, index)
+
+
+
+
